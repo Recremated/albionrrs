@@ -190,7 +190,28 @@ const AlbionItemSearch = () => {
         return;
       }
 
-      const processedItems = data.map((item) => ({
+      let filteredData = data;
+
+      // Eğer tek şehir seçilmediyse, yani tüm şehirler üzerinden arama yapılıyorsa
+      if (!filters.location) {
+        filteredData = data.filter(
+          (item) =>
+            item.sell_price_min > 0 ||
+            item.sell_price_max > 0 ||
+            item.buy_price_min > 0 ||
+            item.buy_price_max > 0
+        );
+      }
+
+      if (!filteredData || filteredData.length === 0) {
+        setError(
+          "Bu item için geçerli veri bulunamadı. Farklı tier/enchantment/quality/location deneyin."
+        );
+        setSearchResults([]);
+        return;
+      }
+
+      const processedItems = filteredData.map((item) => ({
         ...item,
         city: item.city,
         itemId: fullItemId,
