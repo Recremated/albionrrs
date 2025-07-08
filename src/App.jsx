@@ -67,7 +67,10 @@ const AlbionItemSearch = () => {
           if (parts.length >= 3) {
             const itemId = parts[1].trim(); // örnek: T4_CAPEITEM_MORGANA
             const displayName = parts[2].trim(); // örnek: Morgana Cape
-            parsedItems.push({ itemId, displayName });
+            parsedItems.push({
+              itemId,
+              displayName: getDisplayName(displayName),
+            });
           }
         });
 
@@ -165,6 +168,23 @@ const AlbionItemSearch = () => {
       if (!data || data.length === 0) {
         setError(
           "Bu item için veri bulunamadı. Farklı tier/enchantment/quality/location deneyin."
+        );
+        setSearchResults([]);
+        return;
+      }
+
+      // Fiyatlar tamamen sıfırsa uyarı göster
+      const allZero = data.every(
+        (item) =>
+          item.sell_price_min === 0 &&
+          item.sell_price_max === 0 &&
+          item.buy_price_min === 0 &&
+          item.buy_price_max === 0
+      );
+
+      if (allZero) {
+        setError(
+          "Bu item için şu anda satış veya alış fiyatı bulunmamaktadır."
         );
         setSearchResults([]);
         return;
