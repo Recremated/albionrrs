@@ -282,9 +282,7 @@ const AlbionItemSearch = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
-            ITEM ARAYICI 31
-          </h1>
+          <h1 className="text-4xl font-bold text-white mb-2">Recremated#1</h1>
           <p className="text-gray-300">
             Albion Online item fiyatlarını ve verilerini arayın
           </p>
