@@ -60,17 +60,18 @@ const AlbionItemSearch = () => {
         const text = await response.text();
         const rawItems = text.split("\n").filter((line) => line.trim() !== "");
 
-        // Item adlarını temizle ve benzersiz hale getir
-        const cleanedItems = [
-          ...new Set(
-            rawItems.map((item) => {
-              // Tier ve enchantment kısmını kaldır
-              return item.replace(/^T\d+_/, "").replace(/@\d+$/, "");
-            })
-          ),
-        ].filter((item) => item.length > 0);
+        const parsedItems = [];
 
-        setAllItems(cleanedItems);
+        rawItems.forEach((line) => {
+          const parts = line.split(":");
+          if (parts.length >= 3) {
+            const itemId = parts[1].trim(); // örnek: T4_CAPEITEM_MORGANA
+            const displayName = parts[2].trim(); // örnek: Morgana Cape
+            parsedItems.push({ itemId, displayName });
+          }
+        });
+
+        setAllItems(parsedItems);
       } catch (err) {
         setError("Item listesi yüklenirken hata oluştu: " + err.message);
         console.error("Error fetching items:", err);
@@ -102,17 +103,15 @@ const AlbionItemSearch = () => {
   const getFilteredItems = () => {
     let filtered = allItems;
 
-    // Arama terimi varsa filtrele
     if (searchTerm) {
       filtered = filtered.filter(
         (item) =>
-          item.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          getDisplayName(item).toLowerCase().includes(searchTerm.toLowerCase())
+          item.itemId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.displayName.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Sadece ilk 50 sonucu göster (performans için)
-    return filtered.slice(0, 50);
+    return filtered.slice(0, 50); // performans için sınırla
   };
 
   // API'den item verilerini çek
@@ -149,7 +148,7 @@ const AlbionItemSearch = () => {
       const locations = filters.location ? [filters.location] : cities;
       const qualities = [filters.quality];
 
-      const url = `https://www.albion-online-data.com/api/v2/stats/prices/${fullItemId}?locations=${locations.join(
+      const url = `https://europe.albion-online-data.com/api/v2/stats/prices/${fullItemId}?locations=${locations.join(
         ","
       )}&qualities=${qualities.join(",")}`;
 
@@ -173,6 +172,7 @@ const AlbionItemSearch = () => {
 
       const processedItems = data.map((item) => ({
         ...item,
+        city: item.city,
         itemId: fullItemId,
         displayName: getDisplayName(selectedItem),
         tier: filters.tier,
@@ -187,6 +187,27 @@ const AlbionItemSearch = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleItemSelect = (item) => {
+    const itemId = item.itemId; // örnek: T4_CAPEITEM_MORGANA@3
+
+    const tierMatch = itemId.match(/^T\d+/);
+    const enchantMatch = itemId.match(/@(\d+)$/);
+
+    const tier = tierMatch ? tierMatch[0] : "";
+    const enchantment = enchantMatch ? enchantMatch[1] : "0";
+    const cleanedName = itemId
+      .replace(/^T\d+_/, "") // baştan tier'i kaldır
+      .replace(/@\d+$/, ""); // sondan enchant'ı kaldır
+
+    setSelectedItem(cleanedName); // örnek: CAPEITEM_MORGANA
+    setFilters((prev) => ({
+      ...prev,
+      tier,
+      enchantment,
+    }));
+    setSearchTerm("");
   };
 
   // Filtreleri temizle
@@ -242,7 +263,7 @@ const AlbionItemSearch = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">
-            Albion Online Item Search
+            ITEM ARAYICI 31
           </h1>
           <p className="text-gray-300">
             Albion Online item fiyatlarını ve verilerini arayın
@@ -274,24 +295,18 @@ const AlbionItemSearch = () => {
                 {getFilteredItems().map((item, index) => (
                   <div
                     key={index}
-                    onClick={() => {
-                      setSelectedItem(item);
-                      setSearchTerm("");
-                    }}
+                    onClick={() => handleItemSelect(item)}
                     className={`p-3 cursor-pointer hover:bg-white/20 border-b border-white/10 last:border-b-0 ${
-                      selectedItem === item ? "bg-purple-600/30" : ""
+                      selectedItem === item.itemId ? "bg-purple-600/30" : ""
                     }`}
                   >
                     <div className="flex justify-between items-center">
                       <div>
                         <p className="text-white font-medium">
-                          {getDisplayName(item)}
+                          {item.displayName}
                         </p>
-                        <p className="text-gray-400 text-sm">{item}</p>
+                        <p className="text-gray-400 text-sm">{item.itemId}</p>
                       </div>
-                      <span className="text-purple-400 text-sm">
-                        Clean Name
-                      </span>
                     </div>
                   </div>
                 ))}
@@ -416,7 +431,8 @@ const AlbionItemSearch = () => {
                 <p className="text-yellow-200">
                   Arama yapabilmek için <strong>item seçimi</strong>,{" "}
                   <strong>tier</strong>, <strong>enchantment</strong> ve{" "}
-                  <strong>quality</strong> alanları zorunludur.
+                  <strong>quality</strong> alanları zorunludur kardeşim. Zorluk
+                  çıkarma.
                 </p>
               </div>
             </div>
