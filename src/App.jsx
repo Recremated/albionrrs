@@ -305,7 +305,7 @@ const AlbionItemSearch = () => {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Recremated#1</h1>
           <p className="text-gray-300">
-            Albion Online item fiyatlarını ve verilerini arayın
+            Albion Online item fiyatlarını ve verilerini arayın 31
           </p>
           <p className="text-sm text-gray-400 mt-2">
             {allItems.length} item yüklendi
