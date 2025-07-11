@@ -9,14 +9,7 @@ import WarningMessage from "./components/WarningMessage.jsx";
 import ActionButtons from "./components/ActionButtons.jsx";
 import SelectedItem from "./components/SelectedItem.jsx";
 import { ItemService } from "./components/ItemService.js";
-import {
-  oneHandWeapons,
-  twoHandWeapons,
-  armors,
-  helmets,
-  shoes,
-  capes,
-} from "./data/items.js";
+import { itemsAll } from "./data/all_items.js";
 
 const ItemSearchPage = () => {
   const [allItems, setAllItems] = useState([]);
@@ -35,41 +28,19 @@ const ItemSearchPage = () => {
 
   // items.js'den item listesini yükle
   useEffect(() => {
-    const loadItems = async () => {
-      setLoadingItems(true);
-      try {
-        // Tüm item kategorilerini birleştir
-        const allItemCategories = [
-          ...oneHandWeapons,
-          ...twoHandWeapons,
-          ...armors,
-          ...helmets,
-          ...shoes,
-          ...capes,
-        ];
-
-        // Her item için baseItemId ve displayName oluştur
-        const processedItems = allItemCategories.map((item) => ({
-          itemId: item.id, // Base item ID (örn: MAIN_DAGGER)
-          baseItemId: item.id, // Base item ID (aynı)
-          displayName: item.name, // Kullanıcı dostu isim (örn: Dagger)
-        }));
-
-        setAllItems(processedItems);
-
-        // Test API'yi çağır
-        console.log("Testing API...");
-        await ItemService.testAPI();
-
-        console.log(`Toplam ${processedItems.length} item yüklendi`);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoadingItems(false);
-      }
-    };
-
-    loadItems();
+    setLoadingItems(true);
+    try {
+      // allItems'ı doğrudan state'e ata
+      setAllItems(itemsAll);
+      // Test API'yi çağır
+      console.log("Testing API...");
+      ItemService.testAPI();
+      console.log(`Toplam ${allItems.length} item yüklendi`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoadingItems(false);
+    }
   }, []);
 
   // API'den item verilerini çek

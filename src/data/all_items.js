@@ -1,4 +1,4 @@
-export const allItems = [
+const _itemsAll = [
   { id: "UNIQUE_HIDEOUT", name: "Hideout Construction Kit" },
   { id: "2H_TOOL_TRACKING", name: "Journeyman's Tracking Toolkit" },
   { id: "2H_TOOL_TRACKING", name: "Tracking Toolkit" },
@@ -13551,3 +13551,7 @@ export const allItems = [
   { id: "JOURNAL_FISHING_EMPTY", name: "Elder Fisherman's Journal (Empty)" },
   { id: "JOURNAL_FISHING_FULL", name: "Elder Fisherman's Journal (Full)" },
 ];
+
+export const itemsAll = Array.from(
+  new Map(_itemsAll.map((item) => [item.id, item])).values()
+);

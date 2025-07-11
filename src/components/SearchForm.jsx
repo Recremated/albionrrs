@@ -27,8 +27,12 @@ const SearchForm = ({
     return allItems
       .filter(
         (item) =>
-          item.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.itemId.toLowerCase().includes(searchTerm.toLowerCase())
+          (item.name || "")
+            .toLowerCase()
+            .includes((searchTerm || "").toLowerCase()) ||
+          (item.id || "")
+            .toLowerCase()
+            .includes((searchTerm || "").toLowerCase())
       )
       .slice(0, 10);
   }, [allItems, searchTerm]);
