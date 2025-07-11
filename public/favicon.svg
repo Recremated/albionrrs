@@ -1,1 +1,23 @@
- 
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="16" cy="16" r="15" fill="url(#grad1)" stroke="#1F2937" stroke-width="2"/>
+  
+  <!-- Crown -->
+  <path d="M8 12L12 8L16 12L20 8L24 12L22 20H10L8 12Z" fill="#FCD34D" stroke="#92400E" stroke-width="1"/>
+  
+  <!-- Crown Jewels -->
+  <circle cx="12" cy="10" r="1" fill="#EF4444"/>
+  <circle cx="16" cy="10" r="1" fill="#10B981"/>
+  <circle cx="20" cy="10" r="1" fill="#3B82F6"/>
+  
+  <!-- Market Symbol -->
+  <rect x="10" y="22" width="12" height="2" fill="#F59E0B"/>
+  <rect x="11" y="24" width="10" height="1" fill="#F59E0B"/>
+</svg> 
