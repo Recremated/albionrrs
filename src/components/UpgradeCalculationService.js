@@ -18,7 +18,8 @@ export const calculateUpgrade = async (
   selectedEnchantment,
   setLoading,
   setError,
-  setUpgradeResults
+  setUpgradeResults,
+  startPriceZero = false // yeni parametre, default false
 ) => {
   if (
     !selectedWeaponType ||
@@ -186,17 +187,30 @@ export const calculateUpgrade = async (
         const resourceType = getResourceType(selectedTier, step - 1, step);
         const resourceId = getResourceId(selectedTier, step - 1, step);
         const resourcePrice = resourcePriceMap[resourceId];
-        if (!resourcePrice || resourcePrice.sell_price_min === 0) {
+        let unitPrice = 0;
+        if (
+          resourcePrice &&
+          resourcePrice.buy_price_max &&
+          resourcePrice.buy_price_max > 0
+        ) {
+          unitPrice = resourcePrice.buy_price_max;
+        } else if (
+          resourcePrice &&
+          resourcePrice.sell_price_min &&
+          resourcePrice.sell_price_min > 0
+        ) {
+          unitPrice = resourcePrice.sell_price_min;
+        } else {
           allResourcesAvailable = false;
           break;
         }
-        const cost = resourcePrice.sell_price_min * resourceAmount;
+        const cost = unitPrice * resourceAmount;
         totalResourceCost += cost;
         resourceBreakdown.push({
           resourceType,
           resourceId,
           cost,
-          unitPrice: resourcePrice.sell_price_min,
+          unitPrice,
           city: resourcePrice.location,
           amount: resourceAmount,
         });
@@ -207,7 +221,7 @@ export const calculateUpgrade = async (
       }
 
       // Hesaplamalar
-      const currentValue = currentItemPrice.sell_price_min;
+      const currentValue = startPriceZero ? 0 : currentItemPrice.sell_price_min;
       const targetValue = targetItemPrice.sell_price_min;
       const upgradeCost = totalResourceCost;
       const totalCost = currentValue + upgradeCost;

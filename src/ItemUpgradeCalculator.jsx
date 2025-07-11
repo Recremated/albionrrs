@@ -26,6 +26,7 @@ const UpgradeCalculator = () => {
   const [upgradeResults, setUpgradeResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [startPriceZero, setStartPriceZero] = useState(false);
 
   // Filtreleri temizle
   const clearAll = useCallback(() => {
@@ -95,9 +96,16 @@ const UpgradeCalculator = () => {
       selectedEnchantment,
       setLoading,
       setError,
-      setUpgradeResults
+      setUpgradeResults,
+      startPriceZero // yeni parametre
     );
-  }, [selectedWeaponType, selectedWeapon, selectedTier, selectedEnchantment]);
+  }, [
+    selectedWeaponType,
+    selectedWeapon,
+    selectedTier,
+    selectedEnchantment,
+    startPriceZero,
+  ]);
 
   return (
     <div
@@ -131,6 +139,8 @@ const UpgradeCalculator = () => {
           getFilteredWeapons={getFilteredWeapons}
           tiers={tiers}
           enchantments={enchantments}
+          startPriceZero={startPriceZero}
+          setStartPriceZero={setStartPriceZero}
         />
 
         {/* Error Message */}

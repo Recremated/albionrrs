@@ -21,6 +21,8 @@ const WeaponSelectionForm = ({
   getFilteredWeapons,
   tiers,
   enchantments,
+  startPriceZero,
+  setStartPriceZero,
 }) => {
   return (
     <div
@@ -143,6 +145,22 @@ const WeaponSelectionForm = ({
             ))}
           </select>
         </div>
+      </div>
+
+      {/* Toggle: Başlangıç fiyatı 0 olsun */}
+      <div className="mb-6 flex items-center gap-3">
+        <label
+          className="flex items-center cursor-pointer select-none text-gray-200"
+          style={{ color: "#e8c95f", fontWeight: 500 }}
+        >
+          <input
+            type="checkbox"
+            checked={startPriceZero}
+            onChange={(e) => setStartPriceZero(e.target.checked)}
+            className="form-checkbox h-5 w-5 text-yellow-500 rounded focus:ring-yellow-400 border-yellow-400 mr-2"
+          />
+          Itemin başlangıç fiyatı 0 olsun
+        </label>
       </div>
 
       {/* Required Fields Warning */}
